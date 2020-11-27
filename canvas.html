@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Canvas</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="800" height="800"></canvas>
+    </body>
+    <script>
+        const canvas = document.getElementById('canvas') // 获取 canvas 元素
+        const ctx = canvas.getContext('2d') // 获取 canvas 上下文
+        ctx.fillStyle = 'red' // 设置填充色，这个是全局的
+
+        // 矩形
+        ctx.fillRect(0, 0, 200, 50) // 绘制矩形（顶点X，顶点Y，矩形宽，矩形高）
+
+        // 线段
+        ctx.beginPath() // 跟上一段绘制分开，不然起点会是之前的终点
+        ctx.moveTo(350, 50) // 起点
+        ctx.lineTo(200, 350) // 拐点
+        ctx.lineTo(200, 33) // 拐点，也可能是终点
+        ctx.strokeStyle = 'blue' // 线、边框颜色
+        ctx.stroke() // 绘制
+
+        // 圆
+        ctx.beginPath()
+        ctx.fillStyle = '#333'
+        ctx.strokeStyle = '#ccc'
+        ctx.arc(120, 134, 49, 0, 2 * Math.PI) // 圆（中心点X，中心点Y，半径，开始角度，结束角度）, 2PI 是整圆
+        ctx.stroke() // 绘制边
+        ctx.fill() // 填充
+
+        // 文字
+        ctx.font = '30px Arial'
+        ctx.strokeText('Hello', 100, 200) // 空心文字（文字内容，起点X，起点Y）
+        ctx.fillText('World', 180, 200) // 实心文字
+
+        ctx.beginPath() // 开始绘制路径
+        ctx.lineWidth = 1 // 线条宽度
+        ctx.strokeStyle = 'blue' // 线条填充色
+        ctx.moveTo(100, 100) // 起点坐标
+        ctx.lineTo(250, 75) // 中间点坐标
+        ctx.stroke() // 绘制线段
+
+        ctx.lineWidth = 3 // 线条宽度
+        ctx.lineTo(300, 100) // 终点坐标
+        ctx.stroke() // 绘制线段
+    </script>
+</html>
