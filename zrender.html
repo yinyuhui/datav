@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>zrender</title>
+        <script src="https://cdn.jsdelivr.net/npm/zrender@4.3.0/dist/zrender.js"></script>
+    </head>
+    <body>
+        <div id="container" style="width: 600px; height: 600px"></div>
+        <script>
+            const zr = zrender.init(document.getElementById('container'))
+            const rect = new zrender.Rect({
+                shape: {
+                    x: 23,
+                    y: 33,
+                    width: 42,
+                    height: 23,
+                },
+                style: {
+                    fill: 'blue',
+                    stroke: 'red',
+                    lineWidth: 2,
+                },
+            })
+
+            const line = new zrender.Polyline({
+                shape: {
+                    points: [
+                        [242, 53],
+                        [56, 23],
+                        [394, 56],
+                    ],
+                },
+                style: {
+                    stroke: 'yellow',
+                    lineWidth: 4,
+                },
+            })
+
+            const circle = new zrender.Circle({
+                shape: {
+                    cx: 273,
+                    cy: 252,
+                    r: 72,
+                },
+                style: {
+                    stroke: 'gray',
+                    lineWidth: 5,
+                    fill: '#333',
+                },
+            })
+
+            zr.add(rect)
+            zr.add(line)
+            zr.add(circle)
+        </script>
+    </body>
+</html>
