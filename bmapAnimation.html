@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bmapAnimation</title>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+    ></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="animation">
+        <button>开始动画</button>
+    </div>
+    <div class="track-animation">结束动画</div>
+    <script>
+        window.onload = () => {
+            const map = new BMapGL.Map('map', {
+                maxZoom: 22,
+                minZoom: 6
+            })
+
+            const center = new BMapGL.Point(114, 30)
+            map.centerAndZoom(center, 12)
+            map.enableScrollWheelZoom()
+            map.setMapStyleV2({
+                styleId: '99453c76f18f5bd307d86bcc7f898af2'
+            })
+
+            // const keyframes = [{
+            //     center: new BMapGL.Point(116.307092,40.054922),
+            //     zoom:20,
+            //     tilt: 50,
+            //     heading: 0,
+            //     percentage: 0
+            // },
+            // {
+            //     center: new BMapGL.Point(116.307631,40.055391),
+            //     zoom: 21,
+            //     tilt: 70,
+            //     heading: 0,
+            //     percentage: 0.1
+            // },
+            // {
+            //     center: new BMapGL.Point(116.306858,40.057887),
+            //     zoom:21,
+            //     tilt: 70,
+            //     heading: 0,
+            //     percentage: 0.25
+            // },
+            // {
+            //     center: new BMapGL.Point(116.306858,40.057887),
+            //     zoom:21,
+            //     tilt: 70,
+            //     heading: -90,
+            //     percentage: 0.35
+            // },
+            // {
+            //     center: new BMapGL.Point(116.307904,40.058118),
+            //     zoom: 21,
+            //     tilt: 70,
+            //     heading: -90,
+            //     percentage: 0.45
+            // },
+            // {
+            //     center: new BMapGL.Point(116.307904,40.058118),
+            //     zoom: 21,
+            //     tilt: 70,
+            //     heading: -180,
+            //     percentage: 0.55
+            // },
+            // {
+            //     center: new BMapGL.Point(116.308902,40.055954),
+            //     zoom:21,
+            //     tilt: 70,
+            //     heading: -180,
+            //     percentage: 0.75
+            // },
+            // {
+            //     center: new BMapGL.Point(116.308902,40.055954),
+            //     zoom:21,
+            //     tilt: 70,
+            //     heading: -270,
+            //     percentage: 0.85
+            // },
+            // {
+            //     center: new BMapGL.Point(116.307779,40.055754),
+            //     zoom:21,
+            //     tilt: 70,
+            //     heading: -360,
+            //     percentage: 0.95
+            // },
+            // {
+            //     center: new BMapGL.Point(116.307092,40.054922),
+            //     zoom:20,
+            //     tilt: 50,
+            //     heading: -360,
+            //     percentage: 1
+            // },]
+
+
+            const animation = new BMapGL.ViewAnimation(keyframes, {
+                duration: 15000,
+                interation: "INFINITE"
+            })
+            map.startViewAnimation(animation)
+
+        }
+    </script>
+</body>
+</html>
