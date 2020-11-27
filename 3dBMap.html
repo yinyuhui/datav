@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>3d</title>
+        <script src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"></script>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            body {
+                display: flex;
+            }
+            .anchorBL {
+                display: none;
+            }
+            .BMap_stdMpZoom{
+                display: block;
+            }
+            #map {
+                width: 600px;
+                height: 100vh;
+            }
+            #earth {
+                flex: 1;
+                height: 100vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="earth"></div>
+        <script>
+            // 3D
+            const map = new BMapGL.Map('map')
+            map.centerAndZoom(new BMapGL.Point(114.428204, 30.459743), 18)
+            map.enableScrollWheelZoom()
+            map.setHeading(45)
+            map.setTilt(70)
+
+            const control = new BMapGL.ZoomControl({
+                anchor: BMAP_ANCHOR_BOTTOM_LEFT,
+                offset: new BMapGL.Size(10,10)
+            })
+            map.addControl(control)
+
+            const scaleCtrl = new BMapGL.ScaleControl({
+                anchor: BMAP_ANCHOR_TOP_LEFT,
+                offset: new BMapGL.Size(10,10)
+            })
+            map.addControl(scaleCtrl)
+
+            // 3D 地球
+            const earth = new BMapGL.Map('earth', {
+                mapType: BMAP_EARTH_MAP,
+            })
+            earth.centerAndZoom(new BMapGL.Point(114, 30), 3)
+            earth.enableScrollWheelZoom()
+        </script>
+    </body>
+</html>
