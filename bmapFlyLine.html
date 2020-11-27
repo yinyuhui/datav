@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bmapFlyLine</title>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+    ></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <script src="https://mapv.baidu.com/build/mapv.js"></script>  
+    <script src="https://mapv.baidu.com/gl/examples/static/common.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        #map_container {
+            width: 100vw;
+            height: 100vh;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map_container"></div>
+    <script>
+        const center = mapv.utilCityCenter.getCenterByCityName('武汉')
+        const map = initMap({
+            center: [center.lng, center.lat],
+            zoom: 6,
+            tilt: 60,
+            heading: 0,
+            style: purpleStyle
+        })
+
+        const view = new mapvgl.View({ map })
+
+        const citys = ["北京","天津","上海","重庆","石家庄","太原","呼和浩特","哈尔滨","长春","沈阳","济南","南京","合肥","杭州","南昌","福州","郑州","武汉","长沙","广州","南宁","西安","银川","兰州","西宁","乌鲁木齐","成都","贵阳","昆明","拉萨","海口"];
+
+
+        // // 第1趴 平平无奇的飞线 贴着地面飞 蓝色的
+        // var normalFlyLineLayer = new mapvgl.FlyLineLayer({
+        //     color: 'rgba(50, 50, 200, 1)',
+        //     textureColor: 'rgba(50, 50, 200, 1)',
+        //     textureWidth: 30,
+        //     textureLength: 30,
+        //     data: [{
+        //         geometry: {
+        //             type: 'LineString',
+        //             coordinates: [
+        //                 [115.394191, 30.91334],
+        //                 [116.417259, 31.913672]
+        //             ]
+        //         }
+        //     },{
+        //         geometry: {
+        //             type: 'LineString',
+        //             coordinates: [
+        //                 [113.394191, 30.91334],
+        //                 [115.417259, 31.913672]
+        //             ]
+        //         }
+        //     }]
+        // });
+        
+        // view.addLayer(normalFlyLineLayer)
+        // // 平平无奇飞线结束
+
+        // // 第2趴 多个起点飞向同一个终点 贝塞尔曲线飞 底线橙色的
+        // // 生成飞线数据
+        // const data = initData()
+
+        // // 添加飞线图层 
+        // const bezierFlyLineLayer = new mapvgl.FlyLineLayer({
+        //     style: 'normal', // 'normal' | 'chaos' （匀速|非匀速）
+        //     color: 'red', // 底线颜色
+        //     textureColor: 'orange', // 飞线（移动的那一段线）颜色
+        //     textureLength: 20,
+        //     textureWidth: 10,
+        //     data,
+        //     step: 0.3
+        // })
+        // view.addLayer(bezierFlyLineLayer)
+
+        // function initData() {
+        //     // 飞线数量
+        //     let pointCount = 30
+
+        //     const result = []
+        //     while(pointCount--) {
+        //         const index = parseInt(Math.random() * citys.length)
+        //         let source = mapv.utilCityCenter.getCenterByCityName(citys[index])
+        //         // 通过3D曲线生成器生成两点间的贝塞尔曲线
+        //         // 可以提出来只实例化一个对象，通过更新 options 更新线段
+        //         const curve = new mapvgl.BezierCurve({
+        //             start: [source.lng, source.lat],
+        //             end: [center.lng, center.lat]
+        //         })
+        //         // console.log(curve.getPoints())
+        //         result.push({
+        //             geometry: {
+        //                 type: 'LineString',
+        //                 coordinates: curve.getPoints()
+        //             }
+        //         })
+        //     }
+        //     return result
+        // }
+        // // 多起点同一终点飞线结束
+
+        // 第3趴 多条飞线 眼花缭乱贝塞尔曲线飞 蓝绿色和玫红都有
+        const lineData = initLineData()
+        const lineLayer = new mapvgl.FlyLineLayer({
+            style: 'chaos',
+            color: 'rgba(33, 242, 214, 0.3)',
+            // 可以是回调，能取到点的值
+            textureColor: data => data.properties.count > 50 ? '#e33859' : '#56ccdd',
+            step: 0.5, // 0-1 越大越快
+            data: lineData
+        })
+        view.addLayer(lineLayer)
+        function initLineData() {
+            let lineCount = 30
+            const result = []
+            const curve = new mapvgl.BezierCurve()
+            while(lineCount--) {
+                const startIndex = parseInt(Math.random() * citys.length)
+                const endIndex = parseInt(Math.random() * citys.length)
+                const start = mapv.utilCityCenter.getCenterByCityName(citys[startIndex])
+                const end = mapv.utilCityCenter.getCenterByCityName(citys[endIndex])
+                curve.setOptions({
+                    start: [start.lng, start.lat],
+                    end: [end.lng, end.lat]
+                })
+                result.push({
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: curve.getPoints(),
+                    },
+                    properties: {
+                        count: parseInt(Math.random() * 100)
+                    }
+                })
+            }
+            return result
+        }
+
+    </script>
+</body>
+</html>
