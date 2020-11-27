@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+    ></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://mapv.baidu.com/build/mapv.js"></script>  
+    <script src="https://mapv.baidu.com/gl/examples/static/common.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        #map_container {
+            width: 100vw;
+            height: 100vh;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map_container"></div>
+    <script>
+
+        // mapv 使用其工具函数，本例中使用 mapv.utilCityCenter.getCenterByCityName()
+        // mapvgl 获取图层管理器、可视化图层，展示图层
+        
+        // 绘制流程如下，其中234顺序不固定
+        // 1. 初始化地图
+        // 2. 获取图层管理器 View 
+        // 3. 获取和处理数据
+        // 4. 初始化图层
+        // 5. 图层添加到 View 中
+
+        const center = mapv.utilCityCenter.getCenterByCityName('武汉')
+        const map = initMap({
+            center: [center.lng, center.lat],
+            zoom: 6,
+            tilt: 0,
+            style: snowStyle,
+			skyColors: [
+				// 地面颜色
+				'rgba(226, 237, 248, 0)',
+				// 天空颜色
+				'rgba(186, 211, 252, 1)'
+			]
+        })
+
+        const data = initData()
+        setData()
+
+        function setData() {
+            // 颜色值域生成器，可以根据传入的数据计算大小和颜色，通过 getSize() getColor() 获取
+            const intensity = new mapvgl.Intensity({
+                maxSize: 30,
+                minSize: 5,
+                // max: 100
+                gradient: {
+                    0: 'rgb(25, 66, 102, 0.8)',
+                    0.3: 'rgb(145, 102, 129, 0.8)',
+                    0.7: 'rgb(210, 131, 137, 0.8)',
+                    1: 'rgb(248, 177, 149, 0.8)'
+                }
+            })
+
+            const view = new mapvgl.View({map})
+            const layer = new mapvgl.PointLayer({
+                blend: 'light', // 重叠部分样式
+                size: (data) => intensity.getSize(data.properties.count),
+                color: data => intensity.getColor(data.properties.count),
+                data // 这里直接设置 data 或后续使用 setData 都可以
+            })
+            // layer.setData(data)
+            view.addLayer(layer)
+        }
+        
+
+        function initData() {
+            let randomCount = 600;
+            const data = [];
+        
+            const citys = ["北京","天津","上海","重庆","石家庄","太原","呼和浩特","哈尔滨","长春","沈阳","济南","南京","合肥","杭州","南昌","福州","郑州","武汉","长沙","广州","南宁","西安","银川","兰州","西宁","乌鲁木齐","成都","贵阳","昆明","拉萨","海口"];
+
+            while (randomCount--) {
+                const index = parseInt(Math.random() * citys.length)
+                const cityCenter = mapv.utilCityCenter.getCenterByCityName(citys[index])
+
+                data.push({
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [cityCenter.lng - 2 + Math.random() * 4, cityCenter.lat - 2 + Math.random() * 4]
+                    },
+                    properties: {
+                        count: parseInt(Math.random() * 100)
+                    }
+                })
+            }
+
+            return data
+        }
+
+
+        
+    </script>
+</body>
+</html>
