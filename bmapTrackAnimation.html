@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bmapAnimation</title>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+    ></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/library/TrackAnimation/src/TrackAnimation_min.js"></script>
+
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="animation">
+        <button>开始动画</button>
+    </div>
+    <div class="track-animation">结束动画</div>
+    <script>
+        window.onload = () => {
+            const map = new BMapGL.Map('map', {
+                maxZoom: 22,
+                minZoom: 6
+            })
+
+            const center = new BMapGL.Point(114, 30)
+            map.centerAndZoom(center, 12)
+            map.enableScrollWheelZoom()
+            map.setMapStyleV2({
+                styleId: '99453c76f18f5bd307d86bcc7f898af2'
+            })
+
+
+            const animation = new BMapGLLib.TrackAnimation(keyframes, {
+                duration: 15000,
+                interation: "INFINITE"
+            })
+
+        }
+
+        
+    </script>
+</body>
+</html>
