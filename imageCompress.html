@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>image compress</title>
+    </head>
+    <body>
+        <p>image compress</p>
+        <div><input id="compress" type="file" /></div>
+
+        <script>
+            const MAX_W = 1024
+            const MAX_H = 1024
+            const ACCEPT = ['image/jpg', 'image/png', 'image/jpeg']
+            const MAX_SIZE = 3 // M
+
+            const fileInput = document.getElementById('compress')
+            fileInput.addEventListener('change', (e) => {
+                // 获取上传的文件对象
+                const [file] = e.target.files
+
+                // 获取文件的大小、类型
+                const { size, type } = file
+
+                // 文件过大，给提示信息，清空上传内容，不再继续执行
+                if (size > MAX_SIZE * 1024 * 1024) {
+                    alert(`文件超过${MAX_SIZE}M！`)
+                    fileInput.value = ''
+                    return
+                }
+
+                // 文件类型不支持
+                if (!ACCEPT.includes(type)) {
+                    alert(`不支持上传此类型文件！`)
+                    fileInput.value = ''
+                    return
+                }
+
+                revertImage2base64(file, (image) =>
+                    compressImage(image, upload)
+                )
+            })
+
+            // 将文件转为 base64
+            function revertImage2base64(file, callback) {
+                let reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.addEventListener('load', (e) => {
+                    const prevImage = e.target.result
+                    callback && callback(prevImage)
+
+                    // 清空实例，避免内存浪费
+                    reader = null
+                    return prevImage
+                })
+            }
+
+            function compressImage(image, callback) {
+                console.log('compressImage')
+                // 创建一个 img 元素，用于获取图片原始大小
+                const img = document.createElement('img')
+                img.src = image
+
+                // 这里就能直接把图片插入到文档中了
+                // document.body.appendChild(img)
+
+                // 因为图片加载是异步的，绑定监听
+                img.onload = (e) => {
+                    // 假设图片宽高都不需要压缩
+                    let usefulWidth = img.naturalWidth
+                    let usefulHeight = img.naturalHeight
+
+                    // 如果宽度过大，宽设为最大值，高等比压缩
+                    if (usefulWidth > MAX_W) {
+                        // 计算宽压缩比
+                        const ratio = usefulWidth / MAX_W
+                        // 计算尺寸
+                        usefulWidth = MAX_W
+                        usefulHeight = usefulHeight / ratio
+                    }
+
+                    // 如果高度过大，将高设为最大值，宽等比压缩（高比宽大的情况）
+                    if (usefulHeight > MAX_H) {
+                        const ratio = usefulHeight / MAX_H
+                        usefulHeight = MAX_H
+                        usefulWidth /= ratio
+                    }
+
+                    // 图片压缩逻辑，使用 canvas 压缩
+                    // 创建 canvas 元素
+                    const canvas = document.createElement('canvas')
+
+                    // 把宽高设置好
+                    canvas.width = usefulWidth
+                    canvas.height = usefulHeight
+
+                    // 把要压缩的图片绘制到 canvas 画布上
+                    const ctx = canvas.getContext('2d')
+                    ctx.drawImage(img, 0, 0, usefulWidth, usefulHeight)
+
+                    // 把图片导出（图片类型，压缩比）
+                    const newImage = canvas.toDataURL('image/jpeg', 0.8)
+
+                    // 移除 canvas
+                    canvas.remove()
+
+                    // 执行回调如上传逻辑
+                    callback && callback(newImage)
+                }
+            }
+
+            function upload(image) {
+                const img = document.createElement('img')
+                img.src = image
+                document.body.appendChild(img)
+                console.log('newImage', image)
+            }
+        </script>
+    </body>
+</html>
