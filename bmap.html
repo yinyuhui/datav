@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>map</title>
+        <script
+            type="text/javascript"
+            src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+        ></script>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            #map {
+                width: 100vw;
+                height: 100vh;
+            }
+            .anchorBL {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map" />
+        <script>
+            const map = new BMapGL.Map('map', {
+                maxZoom: 20,
+                minZoom: 2,
+            })
+            const center = new BMapGL.Point(113, 31)
+            map.centerAndZoom(center, 8)
+            map.enableScrollWheelZoom(true)
+            map.setMapStyleV2({
+                styleId: '99453c76f18f5bd307d86bcc7f898af2'
+            })
+
+            // // const marker0 = new BMapGL.Marker(new BMapGL.Point(112,30))
+            // // map.addOverlay(marker0)
+
+            // // 新建一个icon
+            // const icon = new BMapGL.Icon('./dog.jpg', new BMapGL.Size(30,30),{})
+            // // const icon = new BMapGL.Icon('http://img.yyh.world/11-18-43-50bc12ad1a1da6df00f580be22423fc3_r.jpg', new BMapGL.Size(30,30),{})
+            // // 新建一个 marker
+            // const marker = new BMapGL.Marker( center, {
+            //     icon,
+            // } )
+            // map.addOverlay(marker)
+
+            // // 线段
+            // const line = new BMapGL.Polyline([new BMapGL.Point(113, 31),new BMapGL.Point(114, 31),new BMapGL.Point(113, 30)])
+            // map.addOverlay(line)
+
+            // // 几何图形
+            // const polygon = new BMapGL.Polygon([new BMapGL.Point(114, 30),new BMapGL.Point(114, 31),new BMapGL.Point(115, 30)],{
+            //     strokeColor: 'red',
+            //     fillColor: '#437239',
+            //     strokeWidth: 3,
+            //     fillOpacity: 0.5
+            // })
+            // map.addOverlay(polygon)
+
+            // // 文字 new BMapGL.Label(content: string, options)
+            // // 文字是 DOM 元素定位上去的
+            // const text = new BMapGL.Label('xxx', {
+            //     position: new BMapGL.Point(112,33),
+            //     offset: new BMapGL.Size(10,10)
+            // })
+            // text.setContent('<div style="color: red"> hello world </div>')
+            // text.setStyle({
+            //     width: '400px',
+            //     height: '200px',
+            //     backgroundColor: 'rgba(242,133,342,0.3)',
+            //     fontSize: 20
+            // })
+            // map.addOverlay(text)
+
+            // // 添加点击事件，弹出弹框
+            // const infoWindow = new BMapGL.InfoWindow('marker clicked',{
+            //     offset: new BMapGL.Size(0, -18)
+            // })
+            // marker.addEventListener('click', () => {
+            //     map.openInfoWindow(infoWindow,center)
+            // })
+
+            // // 线
+            // const line1 = new BMapGL.Polyline( [ new BMapGL.Point(113, 30), new BMapGL.Point(112,31) ] )
+            // map.addOverlay(line1)
+
+
+            // // 1. new Icon (path, size, options)
+            // const icon1 = new BMapGL.Icon('./dog.jpg', new BMapGL.Size(20, 20), {})
+            // // 2. new marker (position, options)
+            // const iconMarker = new BMapGL.Marker( new BMapGL.Point(112, 30), {icon: icon1 } )
+            // // 3. map.addOverlay(marker)
+            // map.addOverlay(iconMarker)
+
+            // const areaPoints = [ new BMapGL.Point(113, 30), new BMapGL.Point(114, 31), new BMapGL.Point(112, 30) ]
+            // const area = new BMapGL.Polygon( areaPoints, { fillColor: 'red' } )
+            // map.addOverlay(area)
+
+            // const infoWindow1 = new BMapGL.InfoWindow( 'this is a infoWindow' )
+            // iconMarker.addEventListener('click', () => {
+            //     map.openInfoWindow(infoWindow1, iconMarker.getPosition(),{
+            //         offset: new BMapGL.Size(0,-20)
+            //     })
+            // })
+
+            // 点
+            const marker = new BMapGL.Marker( new BMapGL.Point(114, 30) )
+            map.addOverlay(marker)
+
+            // 线
+            const linePoints = [ new BMapGL.Point(112, 30), new BMapGL.Point(113, 31) ]
+            const line = new BMapGL.Polyline( linePoints )
+            map.addOverlay(line)
+
+            // 面
+            const areaPoints = [ new BMapGL.Point(113, 30), new BMapGL.Point(114, 31), new BMapGL.Point(112, 30) ]
+            const area = new BMapGL.Polygon( areaPoints, { fillColor: 'red' } )
+            map.addOverlay(area)
+
+            // 文本
+            const label = new BMapGL.Label( 'this is a label', {
+                position: new BMapGL.Point(112, 32)
+            } )
+            label.setStyle({
+                color: '#333',
+                fontSize: 20
+            })
+            map.addOverlay(label )
+
+            // 图片/图标
+            // 1. new Icon (path, size, options)
+            const icon = new BMapGL.Icon('./dog.jpg', new BMapGL.Size(20, 20), {})
+            // 2. new marker (position, options)
+            const iconMarker = new BMapGL.Marker( new BMapGL.Point(112, 30), { icon } )
+            // 3. map.addOverlay(marker)
+            map.addOverlay(iconMarker)
+
+            // infoWindow ( content, options )
+            const infoWindow = new BMapGL.InfoWindow( 'this is a infoWindow', {
+            offset: new BMapGL.Size(0, -20)
+            })
+            iconMarker.addEventListener('click', () => {
+            map.openInfoWindow(infoWindow, iconMarker.getPosition())
+            })
+
+        </script>
+    </body>
+</html>
