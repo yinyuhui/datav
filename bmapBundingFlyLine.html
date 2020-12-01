@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bmapBundingFlyLine</title>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+    ></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <script src="https://mapv.baidu.com/build/mapv.js"></script>  
+    <script src="https://mapv.baidu.com/gl/examples/static/common.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        #map_container {
+            width: 100vw;
+            height: 100vh;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map_container"></div>
+    <script>
+        const map = initMap({
+            center: [108.154518, 36.643346],
+            zoom: 6,
+            tilt: 0,
+            heading: 0
+        })
+
+        const view = new mapvgl.View({ map })
+        const target = mapv.utilCityCenter.getCenterByCityName('潜江')
+        const citys = ["北京","天津","上海","重庆","石家庄","太原","呼和浩特","哈尔滨","长春","沈阳","济南","南京","合肥","杭州","南昌","福州","郑州","武汉","长沙","广州","南宁","西安","银川","兰州","西宁","乌鲁木齐","成都","贵阳","昆明","拉萨","海口"];
+
+        const data = initData()
+
+        // 普通的线图层
+        const lineLayer = new mapvgl.LineLayer({
+            data,
+            blend: 'lighter',
+            width: 2,
+            color: 'rgba(55, 50, 250, 0.3)',
+        })
+
+        // 沿着线移动的点图层  可以设置点的大小颜色形状移动速度移动方式等
+        const layer = new mapvgl.LinePointLayer({
+            data,
+            color: 'rgba(255, 250, 250, 0.9)',
+            size: 6,
+            speed: 12,
+            animationType: mapvgl.LinePointLayer.ANIMATION_TYPE_SMOOTH,
+            shapeType: mapvgl.LinePointLayer.SHAPE_TYPE_CIRCLE,
+            blend: 'lighter'
+        })
+
+        view.addLayer(lineLayer)
+        view.addLayer(layer)
+
+
+        function initData() {
+            const POINT_COUNT = 500
+            // const res = []
+            const points = [{ x: target.lng, y: target.lat }]
+            const edges = []
+            let count = 0
+            
+            // 生成点集和边集 
+            while (count++ < POINT_COUNT) {
+                const index = Math.floor(Math.random() * citys.length)
+                const point = mapv.utilCityCenter.getCenterByCityName(citys[index])
+                points.push({x: point.lng - 5 + Math.random() * 10, y: point.lat - 5 + Math.random() * 10})
+                edges.push({
+                    source: count, // source 和 target 都是点集中的 index
+                    target: 0
+                })
+            }
+
+            // 生成边绑定之后的数据
+            const bunding = mapv.utilForceEdgeBundling().nodes(points).edges(edges)
+        
+            return bunding().map(item => ({
+                geometry: {
+                    type: 'LineString',
+                    coordinates: item.map(coord => [coord.x, coord.y])
+                }
+            }))
+
+        }
+
+    </script>
+</body>
+</html>
