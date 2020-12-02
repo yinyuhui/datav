@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bmap3DBuilding</title>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=U0BSGQVEUTU9R5x48Xyl7BlBa3LXSKxm"
+    ></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <script src="https://mapv.baidu.com/build/mapv.js"></script>  
+    <script src="https://mapv.baidu.com/gl/examples/static/common.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        #map_container {
+            width: 100vw;
+            height: 100vh;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map_container"></div>
+    <script>
+        const map = initMap({
+            center: [114.285896,30.588047],
+            zoom: 18,
+            tilt: 60,
+        })
+
+        const view = new mapvgl.View({ map })
+
+        const shapeLayer = new mapvgl.ShapeLayer({
+            color: 'yellow', // 楼宇颜色
+            // texture: './dog.jpg', // 楼宇贴图，这个还要再看一下怎么设置配置项，文档里没有
+            // textureScale: 0.05, // 官方示例里看到的一个配置项
+            riseTime: 2000, // 楼宇升起来的时间
+            // opacity: 0.3, 
+            style: 'windowAnimation', // 'normal', 'window', 'windowAnimation', 'gradual'
+            blend: 'lighter', 
+            // data: polygons,
+
+            // 选中效果，文档里没写... 
+            enablePicked: true, // 必须先开启
+            selectedIndex: -1, // 初始化选中的楼宇
+            selectedColor: '#e75839', 
+            autoSelect: true, // 跟随鼠标移动选中
+
+            // 楼宇 click，打印楼宇属性
+            onClick(e) { 
+                console.log(e)
+            },
+
+            // 鼠标移动，如果在要素上 e 就是要素的属性
+            // onMousemove(e) { 
+            //     console.log(e)
+            // },
+        })
+
+        async function showBuilding() {
+            const data = await initData()
+            shapeLayer.setData(data)
+            view.addLayer(shapeLayer)
+        }
+
+        showBuilding()
+
+        function initData() {
+            return fetch('./building_hankou_cgcs2000.json').then(function (rs) {
+                return rs.json();
+            }).then( rs => {
+                var { features: data } = rs;
+                return data.map(item => ({
+                    ...item,
+                    properties: {
+                        height: item.properties.Floor * 2
+                    }
+                }))
+            })
+        }
+
+    </script>
+</body>
+</html>
